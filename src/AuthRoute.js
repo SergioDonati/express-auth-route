@@ -5,7 +5,7 @@ const AuthRouteError = require('./AuthRouteError');
 /**
  *	@see https://tools.ietf.org/html/rfc6749
  */
-modules.exports = class AuthRoute{
+module.exports = class AuthRoute{
 
 	constructor(){
 		this._authenticators = new Map();
