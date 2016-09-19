@@ -36,8 +36,8 @@ auth.addAuthenticator('password', new AuthRoute.PasswordAuthenticator(function(u
 	callback(null, param1);
 }));
 
-// Add at least one authenticator
-auth.addAuthorizer('admin', function(req, next){
+// Authorizers are optional
+auth.addAuthorizer('admin', function(req, ...parameters, next){
 	... you logic here
 	if (isAdmin(req.user)) next();
 	else next(new Error('Access Denied!'));	// Error will be handled by AuthRoute
@@ -48,7 +48,7 @@ router.get('/token', auth.authenticate());
 router.get('/secure', auth.authorize(), function(req, res){
 	res.render('secure-page');
 });
-router.get('/secure/admin', auth.authorize('admin'), function(req, res){
+router.get('/secure/admin', auth.authorize('admin', ...parameters), function(req, res){
 	res.render('secure-page');
 });
 ```

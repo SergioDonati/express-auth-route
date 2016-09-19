@@ -24,11 +24,13 @@ const ERROR_DESCRIPTION = {
 	temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.'
 }
 
-module.exports = class OAuth2Error extends Error{
+module.exports = class AuthRouteError extends Error{
 	constructor(msg, errorCode){
-		if (msg instanceof Error) super(msg.message);
-		else super(msg);
-		if (ERROR_DESCRIPTION[this.message]) errorCode = msg;
+		if (msg instanceof Error){
+			super(msg.message);
+			this.originalError = msg;
+		}else super(msg);
+		if (ERROR_DESCRIPTION[this.message]) errorCode = this.message;
 		if (!ERROR_DESCRIPTION[errorCode]) errorCode = ERROR_CODES.SERVER_ERROR;
 		this.error_code = errorCode;
 		this.error_description = ERROR_DESCRIPTION[errorCode];
