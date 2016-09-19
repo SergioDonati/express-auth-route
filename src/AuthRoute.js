@@ -53,9 +53,9 @@ modules.exports = class AuthRoute{
 				if (this._authenticators.has(grant_type)) return next(AuthRouteError.ERROR_CODES.UNSUPPORTED_GRANT_TYPE);
 				this._authenticators.get(grant_type).authenticate(req, (err, params)=>{
 					if (err) return next(err);
-					this._generateToken(params, function(err, token){
+					this._generateToken(params, function(err, token, options){
 						if (err) return next(err);
-						res.json(this._success(token));
+						res.json(this._success(token, options));
 					});
 				});
 			},
@@ -69,14 +69,14 @@ modules.exports = class AuthRoute{
 	authorize(name, ...args){
 		return [
 			(req, res, next)=>{
-				const access_token = req.method == 'POST' ? req.body.access_token : req.query.access_token;
+				let access_token = req.method == 'POST' ? req.body.access_token : req.query.access_token;
 				if (!access_token){
 					const parts = authorization.split(' ');
 					if (parts.length != 2) return false;
 					const scheme = parts[0];
 					const credentials = parts[1];
 					if (/^Bearer$/i.test(scheme)) access_token = credentials;
-					else return next(OAuth2Error.ERROR_CODES.ACCESS_DENIED);
+					else return next(AuthRouteError.ERROR_CODES.ACCESS_DENIED);
 				}
 				this._checkToken(req, access_token, next);
 			},
