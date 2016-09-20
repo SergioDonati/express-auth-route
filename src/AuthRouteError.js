@@ -9,7 +9,8 @@ const ERROR_CODES = {
 	INVALID_CLINET: 'invalid_client',
 	INVALID_SCOPE: 'invalid_scope',
 	SERVER_ERROR: 'server_error',
-	TEMPORARILY_UNAVABLE: 'temporarily_unavailable'
+	TEMPORARILY_UNAVABLE: 'temporarily_unavailable',
+	INVALID_CREDENTIALS: 'invalid_credentials'
 };
 
 const ERROR_DESCRIPTION = {
@@ -20,6 +21,7 @@ const ERROR_DESCRIPTION = {
 	invalid_grant: 'The provided authorization grant (e.g., authorization code, resource owner credentials) or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.',
 	invalid_scope: 'The requested scope is invalid, unknown, or malformed.',
 	invalid_client: 'Client authentication failed.',
+	invalid_credentials: 'Credentials are wrong or missing.',
 	server_error: 'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
 	temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.'
 }
@@ -32,6 +34,7 @@ module.exports = class AuthRouteError extends Error{
 		}else super(msg);
 		if (ERROR_DESCRIPTION[this.message]) errorCode = this.message;
 		if (!ERROR_DESCRIPTION[errorCode]) errorCode = ERROR_CODES.SERVER_ERROR;
+		if (errorCode == ERROR_CODES.SERVER_ERROR) this.status = 500;
 		this.error_code = errorCode;
 		this.error_description = ERROR_DESCRIPTION[errorCode];
 	}

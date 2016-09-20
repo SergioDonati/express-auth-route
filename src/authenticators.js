@@ -27,7 +27,7 @@ module.exports.PasswordAuthenticator = class PasswordAuthenticator{
 		const username = fetchField(req, this._usernameField);
 		const password = fetchField(req, this._passwordField);
 
-		if (!username || !password) return done(new Error('Missing Credentials!'));
+		if (!username || !password) return done('invalid_credentials');
 
 		if (this._passReq) this._verify(req, username, password, done);
 		else this._verify(username, password, done);

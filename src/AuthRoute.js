@@ -11,7 +11,7 @@ module.exports = class AuthRoute{
 		this._authenticators = new Map();
 		this._authorizers = new Map();
 		this._generateToken = (params, callback) => { throw new Error('YOU MUSt implement generateToken of OAuth2.'); };
-		this._checkToken = (token, callback) => { throw new Error('YOU MUSt implement checkToken of OAuth2.'); }
+		this._checkToken = (req, token, callback) => { throw new Error('YOU MUSt implement checkToken of OAuth2.'); }
 	}
 
 	// Developer must implement you logic
@@ -29,9 +29,9 @@ module.exports = class AuthRoute{
 		};
 	}
 
-	_fail(error){
-		if (!error instanceof AuthRouteError) error = new AuthRouteError(error);
-		return error.toJSONResponse();
+	_fail(res, error){
+		if (!(error instanceof AuthRouteError)) error = new AuthRouteError(error);
+		res.status(error.status || 400).json(error.toJSONResponse());
 	}
 
 	addAuthenticator(grant_type, authenticator){
@@ -46,20 +46,21 @@ module.exports = class AuthRoute{
 
 	// Array of middlewares for hanlde the request of token
 	authenticate(){
+		const self = this;
 		return [
 			(req, res, next)=>{
 				const grant_type = req.method == 'POST' ? req.body.grant_type : req.query.grant_type;
 				if (!grant_type) return next(AuthRouteError.ERROR_CODES.INVALID_GRANT);
-				if (this._authenticators.has(grant_type)) return next(AuthRouteError.ERROR_CODES.UNSUPPORTED_GRANT_TYPE);
-				this._authenticators.get(grant_type).authenticate(req, (err, params)=>{
+				if (!self._authenticators.has(grant_type)) return next(AuthRouteError.ERROR_CODES.UNSUPPORTED_GRANT_TYPE);
+				self._authenticators.get(grant_type).authenticate(req, (err, params)=>{
 					if (err) return next(err);
-					this._generateToken(params, function(err, token, options){
+					self._generateToken(params, function(err, token, options){
 						if (err) return next(err);
-						res.json(this._success(token, options));
+						res.json(self._success(token, options));
 					});
 				});
 			},
-			(err, req, res, next)=>{ res.json(this._fail(err));}
+			(err, req, res, next)=>{ self._fail(res, err);}
 		]
 	}
 
@@ -67,28 +68,29 @@ module.exports = class AuthRoute{
 	 *	Middleware for check if the request was authorized
 	 */
 	authorize(name, ...args){
+		const self = this;
 		return [
 			(req, res, next)=>{
 				let access_token = req.method == 'POST' ? req.body.access_token : req.query.access_token;
-				if (!access_token){
-					const parts = authorization.split(' ');
+				if (!access_token && req.get('Authorization')){
+					const parts = req.get('Authorization').split(' ');
 					if (parts.length != 2) return false;
 					const scheme = parts[0];
 					const credentials = parts[1];
 					if (/^Bearer$/i.test(scheme)) access_token = credentials;
-					else return next(AuthRouteError.ERROR_CODES.ACCESS_DENIED);
 				}
-				this._checkToken(req, access_token, next);
+				if (!access_token) return next(AuthRouteError.ERROR_CODES.ACCESS_DENIED);
+				self._checkToken(req, access_token, next);
 			},
 			(req, res, next) => {
 				if (!name) return next();
-				if (this._authorizers.has(name)){
+				if (self._authorizers.has(name)){
 					console.warn('Called authorize method with param name: "%s", but none authorizer with this name was registered.', name);
 					return next();
 				}
-				this._authorizers.get(name)(req, ...args, next);
+				self._authorizers.get(name)(req, ...args, next);
 			},
-			(err, req, res, next)=>{ res.json(this._fail(err));}
+			(err, req, res, next)=>{ self._fail(res, err);}
 		]
 	}
 }
