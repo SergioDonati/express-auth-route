@@ -6,8 +6,9 @@ const ERROR_CODES = {
 	ACCESS_DENIED: 'access_denied',
 	UNSUPPORTED_GRANT_TYPE: 'unsupported_grant_type',
 	INVALID_GRANT: 'invalid_grant',
-	INVALID_CLINET: 'invalid_client',
+	INVALID_CLIENT: 'invalid_client',
 	INVALID_SCOPE: 'invalid_scope',
+	INVALID_TOKEN: 'invalid_token',
 	SERVER_ERROR: 'server_error',
 	TEMPORARILY_UNAVABLE: 'temporarily_unavailable',
 	INVALID_CREDENTIALS: 'invalid_credentials'
@@ -22,6 +23,7 @@ const ERROR_DESCRIPTION = {
 	invalid_scope: 'The requested scope is invalid, unknown, or malformed.',
 	invalid_client: 'Client authentication failed.',
 	invalid_credentials: 'Credentials are wrong or missing.',
+	invalid_token: 'Token invalid or expired.',
 	server_error: 'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
 	temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.'
 }

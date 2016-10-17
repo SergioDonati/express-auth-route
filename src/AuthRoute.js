@@ -10,8 +10,8 @@ module.exports = class AuthRoute{
 	constructor(){
 		this._authenticators = new Map();
 		this._authorizers = new Map();
-		this._generateToken = (params, callback) => { throw new Error('YOU MUSt implement generateToken of OAuth2.'); };
-		this._checkToken = (req, token, callback) => { throw new Error('YOU MUSt implement checkToken of OAuth2.'); }
+		this._generateToken = (params, callback) => { throw new Error('YOU MUST implement generateToken method.'); };
+		this._checkToken = (req, token, callback) => { throw new Error('YOU MUST implement checkToken method.'); }
 	}
 
 	// Developer must implement you logic
@@ -35,7 +35,7 @@ module.exports = class AuthRoute{
 	}
 
 	addAuthenticator(grant_type, authenticator){
-		if (!authenticator || typeof authenticator.authenticate !== 'function') throw new Error('Invalid authenticator, MUST implement authenticate function.');
+		if (!authenticator || typeof authenticator.authenticate !== 'function') throw new Error('Invalid authenticator, MUST implement authenticate method.');
 		this._authenticators.set(grant_type, authenticator);
 	}
 
@@ -72,6 +72,7 @@ module.exports = class AuthRoute{
 		return [
 			(req, res, next)=>{
 				let access_token = req.method == 'POST' ? req.body.access_token : req.query.access_token;
+				// Check Bearer Token in header
 				if (!access_token && req.get('Authorization')){
 					const parts = req.get('Authorization').split(' ');
 					if (parts.length != 2) return false;
@@ -84,7 +85,7 @@ module.exports = class AuthRoute{
 			},
 			(req, res, next) => {
 				if (!name) return next();
-				if (self._authorizers.has(name)){
+				if (!self._authorizers.has(name)){
 					console.warn('Called authorize method with param name: "%s", but none authorizer with this name was registered.', name);
 					return next();
 				}
