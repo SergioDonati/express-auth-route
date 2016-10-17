@@ -17,12 +17,12 @@ const AuthRoute = require('express-auth-route');
 const auth = new AuthRoute();
 
 auth.generateToken(function(param1, callback){
-	... you logic here
+	... your logic here
 	callback(null, token);
 });
 
 auth.checkToken(function(req, token, callback){
-	... you logic here
+	... your logic here
 	// if you need in your next middlewares or endpoints
 	req.access_token = token;
 	// if you have fetched user by the token you can pass in the next
@@ -31,14 +31,16 @@ auth.checkToken(function(req, token, callback){
 });
 
 // Add at least one authenticator
+// when request come grant_type must be equals to your authenticator
+// you can create your custom authenticator, the only required implemented method is 'authenticate(req, done)'
 auth.addAuthenticator('password', new AuthRoute.PasswordAuthenticator(function(username, password, done){
-	... you logic here
+	... your logic here
 	callback(null, param1);
 }));
 
 // Authorizers are optional
 auth.addAuthorizer('admin', function(req, ...parameters, next){
-	... you logic here
+	... your logic here
 	if (isAdmin(req.user)) next();
 	else next(new Error('Access Denied!'));	// Error will be handled by AuthRoute
 });
