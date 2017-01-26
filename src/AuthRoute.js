@@ -75,7 +75,7 @@ module.exports = class AuthRoute{
 				// Check Bearer Token in header
 				if (!access_token && req.get('Authorization')){
 					const parts = req.get('Authorization').split(' ');
-					if (parts.length != 2) return false;
+					if (parts.length != 2) return next(AuthRouteError.ERROR_CODES.INVALID_TOKEN);
 					const scheme = parts[0];
 					const credentials = parts[1];
 					if (/^Bearer$/i.test(scheme)) access_token = credentials;
