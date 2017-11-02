@@ -1,9 +1,13 @@
 # Express Authorize Route
 
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg?style=flat-square)](SergioDonati/express-auth-route)
-[![David]()](https://david-dm.org/SergioDonati/express-auth-route.svg)
 [![bitHound](https://img.shields.io/bithound/dependencies/github/rexxars/sse-channel.svg?style=flat-square)](SergioDonati/express-auth-route)
 [![bitHound](https://img.shields.io/bithound/devDependencies/github/rexxars/sse-channel.svg?style=flat-square)](SergioDonati/express-auth-route)
+
+
+[![npm](https://img.shields.io/npm/v/npm.svg?style=flat-square)](SergioDonati/express-auth-route)
+[![npm](https://img.shields.io/npm/l/express.svg?style=flat-square)](SergioDonati/express-auth-route)
+
 
 Helper for authorize access to [Express](http://expressjs.com/) routers with token.
 
