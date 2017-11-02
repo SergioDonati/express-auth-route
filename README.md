@@ -52,7 +52,7 @@ auth.addAuthenticator('password', new AuthRoute.PasswordAuthenticator(async (use
 // Authorizers are optional
 auth.addAuthorizer('admin', async (req, ...parameters)=>{
 	... your logic here
-	if (isAdmin(req.user)) next();
+	if (isAdmin(req.user)) return;
 	else throw AuthRoute.PredefinedError('Access Denied!');	// Error will be handled by AuthRoute
 });
 
