@@ -86,3 +86,4 @@ $RECYCLE.BIN/
 
 #npmignore
 test
+.travis.yml
