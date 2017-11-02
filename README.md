@@ -13,8 +13,6 @@ Helper for authorize access to [Express](http://expressjs.com/) routers with tok
 
 ## Install
 
-This module require node >= 6.5.0 because is written with the last ECMAScript 6 features, so firstly check your version.
-
 ```bash
 $ npm install express-auth-route --save
 ```
@@ -25,40 +23,50 @@ $ npm install express-auth-route --save
 const AuthRoute = require('express-auth-route');
 const auth = new AuthRoute();
 
-auth.generateToken(function(param1, callback){
+auth.generateToken(async(param1)=>{
 	... your logic here
-	callback(null, token);
+	return token;
 });
 
-auth.checkToken(function(req, token, callback){
+auth.checkAccessToken(async (req, token, params)=>{
 	... your logic here
 	// if you need in your next middlewares or endpoints
 	req.access_token = token;
 	// if you have fetched user by the token you can pass in the next
 	req.user = user;
-	callback();
+
+	return; // pass the check
+
+	// or throw AuthRoute.PredefinedError('access_denied');
 });
 
 // Add at least one authenticator
 // when request come grant_type must be equals to your authenticator
 // you can create your custom authenticator, the only required implemented method is 'authenticate(req, done)'
-auth.addAuthenticator('password', new AuthRoute.PasswordAuthenticator(function(username, password, done){
+auth.addAuthenticator('password', new AuthRoute.PasswordAuthenticator(async (username, password)=>{
 	... your logic here
-	callback(null, param1);
+	if (username == 'admin' && password == '1234') return {username:'admin'};
+	else throw AuthRoute.PredefinedError('invalid_grant');
 }));
 
 // Authorizers are optional
-auth.addAuthorizer('admin', function(req, ...parameters, next){
+auth.addAuthorizer('admin', async (req, ...parameters)=>{
 	... your logic here
 	if (isAdmin(req.user)) next();
-	else next(new Error('Access Denied!'));	// Error will be handled by AuthRoute
+	else throw AuthRoute.PredefinedError('Access Denied!');	// Error will be handled by AuthRoute
 });
 
+
+// now defined the express routes
+
+// GET /token return the access_token if authenticate success
 router.get('/token', auth.authenticate());
 
+// GET /secure render the secure-page only if we are authorized
 router.get('/secure', auth.authorize(), function(req, res){
 	res.render('secure-page');
 });
+// GET /secure/admin render the secure-page only if we are authorized and we pass the admin authorizer
 router.get('/secure/admin', auth.authorize('admin', ...parameters), function(req, res){
 	res.render('secure-page');
 });
