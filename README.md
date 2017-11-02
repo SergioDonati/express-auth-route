@@ -1,8 +1,8 @@
 # Express Authorize Route
 
-[![Travis](https://img.shields.io/travis/SergioDonati/express-auth-route.svg?style=flat-square)]
-[![bitHound](https://img.shields.io/bithound/dependencies/github/SergioDonati/express-auth-route.svg?style=flat-square)]
-[![bitHound](https://img.shields.io/bithound/devDependencies/github/SergioDonati/express-auth-route.svg?style=flat-square)]
+![Travis](https://img.shields.io/travis/SergioDonati/express-auth-route.svg?style=flat-square)
+![bitHound](https://img.shields.io/bithound/dependencies/github/SergioDonati/express-auth-route.svg?style=flat-square)
+![bitHound](https://img.shields.io/bithound/devDependencies/github/SergioDonati/express-auth-route.svg?style=flat-square)
 
 
 [![npm](https://img.shields.io/npm/v/express-auth-route.svg?style=flat-square)](https://www.npmjs.com/package/express-auth-route)
