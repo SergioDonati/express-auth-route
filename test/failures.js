@@ -8,9 +8,9 @@ describe('FAILURES', function(){
 	const app = express();
 	const authRoute = new AuthRoute();
 
-	authRoute.addAuthenticator('password', new AuthRoute.PasswordAuthenticator({}, function(username, password, done){
-		if (username == 'admin' && password == '1234') return done(null, {username:'admin'});
-		else done('invalid_credentials');
+	authRoute.addAuthenticator('password', new AuthRoute.PasswordAuthenticator({}, async (username, password)=>{
+		if (username == 'admin' && password == '1234') return {username:'admin'};
+		else throw AuthRoute.PredefinedError('invalid_grant');
 	}));
 
 	app.get('/token', authRoute.authenticate());
@@ -20,7 +20,7 @@ describe('FAILURES', function(){
 	it('should return invalid_grant error', function(done){
 		agent.get('/token').expect(400).end(function(err, res){
 			if (err) return done(err);
-			should(res.body).have.property('error', 'invalid_grant');
+			should(res.body).have.property('error', 'unsupported_grant_type');
 			done();
 		});
 	});
@@ -33,10 +33,10 @@ describe('FAILURES', function(){
 		});
 	});
 
-	it('should return invalid_credentials error', function(done){
+	it('should return invalid_grant error', function(done){
 		agent.get('/token?grant_type=password').expect(400).end(function(err, res){
 			if (err) return done(err);
-			should(res.body).have.property('error', 'invalid_credentials');
+			should(res.body).have.property('error', 'invalid_grant');
 			done();
 		});
 	});

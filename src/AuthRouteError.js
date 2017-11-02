@@ -11,7 +11,8 @@ const ERROR_CODES = {
 	INVALID_TOKEN: 'invalid_token',
 	SERVER_ERROR: 'server_error',
 	TEMPORARILY_UNAVABLE: 'temporarily_unavailable',
-	INVALID_CREDENTIALS: 'invalid_credentials'
+	INVALID_CREDENTIALS: 'invalid_credentials',
+	INSUFFICIENT_SCOPE: 'insufficient_scope'
 };
 
 const ERROR_DESCRIPTION = {
@@ -25,20 +26,28 @@ const ERROR_DESCRIPTION = {
 	invalid_credentials: 'Credentials are wrong or missing.',
 	invalid_token: 'Token invalid or expired.',
 	server_error: 'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
-	temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.'
+	temporarily_unavailable: 'The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.',
+	insufficient_scope: 'The request requires higher privileges than provided by the access token.'
 }
 
 module.exports = class AuthRouteError extends Error{
-	constructor(msg, errorCode){
+	constructor(msg, errorCode, statusCode){
 		if (msg instanceof Error){
 			super(msg.message);
 			this.originalError = msg;
 		}else super(msg);
-		if (ERROR_DESCRIPTION[this.message]) errorCode = this.message;
+		this.error_description = this.message;
+		if (ERROR_DESCRIPTION[this.message]){
+			errorCode = this.message;
+			this.error_description[errorCode];
+		}
 		if (!ERROR_DESCRIPTION[errorCode]) errorCode = ERROR_CODES.SERVER_ERROR;
 		if (errorCode == ERROR_CODES.SERVER_ERROR) this.status = 500;
+		else if (errorCode == ERROR_CODES.INVALID_CLIENT || errorCode == ERROR_CODES.INVALID_TOKEN) this.status = 401;
+		else if (errorCode == ERROR_CODES.INVALID_REQUEST) this.status = 400;
+		else if (errorCode == ERROR_CODES.INSUFFICIENT_SCOPE) this.status = 403;
+		if(statusCode) this.status = statusCode; // overwrite all previous settings
 		this.error_code = errorCode;
-		this.error_description = ERROR_DESCRIPTION[errorCode];
 	}
 
 	static get ERROR_CODES(){ return ERROR_CODES; }
