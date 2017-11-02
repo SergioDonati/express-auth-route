@@ -23,7 +23,7 @@ $ npm install express-auth-route --save
 const AuthRoute = require('express-auth-route');
 const auth = new AuthRoute();
 
-auth.generateToken(async(param1)=>{
+auth.generateToken(async(params)=>{
 	... your logic here
 	return token;
 });
@@ -74,7 +74,7 @@ router.get('/secure/admin', auth.authorize('admin', ...parameters), function(req
 
 ## How work
 
-TODO
+Coming soon.
 
 ## Credits
 
