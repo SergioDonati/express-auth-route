@@ -1,12 +1,12 @@
 # Express Authorize Route
 
-[![Travis](https://img.shields.io/travis/rust-lang/rust.svg?style=flat-square)](SergioDonati/express-auth-route)
-[![bitHound](https://img.shields.io/bithound/dependencies/github/rexxars/sse-channel.svg?style=flat-square)](SergioDonati/express-auth-route)
-[![bitHound](https://img.shields.io/bithound/devDependencies/github/rexxars/sse-channel.svg?style=flat-square)](SergioDonati/express-auth-route)
+[![Travis](https://img.shields.io/travis/SergioDonati/express-auth-route.svg?style=flat-square)]
+[![bitHound](https://img.shields.io/bithound/dependencies/github/SergioDonati/express-auth-route.svg?style=flat-square)]
+[![bitHound](https://img.shields.io/bithound/devDependencies/github/SergioDonati/express-auth-route.svg?style=flat-square)]
 
 
-[![npm](https://img.shields.io/npm/v/npm.svg?style=flat-square)](SergioDonati/express-auth-route)
-[![npm](https://img.shields.io/npm/l/express.svg?style=flat-square)](SergioDonati/express-auth-route)
+[![npm](https://img.shields.io/npm/v/express-auth-route.svg?style=flat-square)](https://www.npmjs.com/package/express-auth-route)
+[![npm](https://img.shields.io/npm/l/express-auth-route.svg?style=flat-square)](https://www.npmjs.com/package/express-auth-route)
 
 
 Helper for authorize access to [Express](http://expressjs.com/) routers with token.
